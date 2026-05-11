@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1080, height=1920"/>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#FAF8F5;font-family:'Inter','SF Pro',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .clip{position:absolute}
+  .serif{font-family:'PT Serif','Georgia',serif}
+  .mono{font-family:'JetBrains Mono','Fira Code',monospace}
+  .accent{color:#C85A4E}
+  .gold{color:#C8A96E}
+  .fade{background:linear-gradient(180deg,transparent,#FAF8F5)}
+
+  /* Phone frame */
+  .phone{width:340px;height:620px;border:3px solid #1A1816;border-radius:40px;background:#fff;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.12)}
+  .phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#1A1816;border-radius:0 0 16px 16px;z-index:5}
+  .phone-screen{position:absolute;top:24px;left:0;right:0;bottom:0;background:#fff;overflow:hidden;padding:24px 20px}
+  .phone-line{height:4px;background:#E6DFD6;border-radius:2px;margin-bottom:8px}
+  .phone-line.w{width:60%}.phone-line.l{width:80%}.phone-line.s{width:40%}
+  .phone-block{height:80px;background:#F5F2EE;border-radius:6px;margin:12px 0}
+  .phone-dot{width:6px;height:6px;background:#C85A4E;border-radius:50%;display:inline-block;margin-right:4px}
+
+  /* Laptop frame */
+  .laptop{width:500px;height:320px;border:3px solid #1A1816;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.1)}
+  .laptop-screen{height:100%;padding:10px;overflow:hidden}
+
+  /* Resume elements */
+  .r-heading{font-family:'PT Serif',serif;font-size:14px;font-weight:700;color:#1A1816}
+  .r-meta{font-size:10px;color:#6B6258;margin-top:2px}
+  .r-line{height:3px;background:#E6DFD6;border-radius:2px;margin:6px 0}
+  .r-bar{height:6px;background:#F0E6E4;border-radius:3px;overflow:hidden}
+  .r-bar-fill{height:100%;background:#C85A4E;border-radius:3px;width:var(--w)}
+  .r-tag{font-size:9px;padding:2px 8px;background:#F5F2EE;border-radius:3px;color:#6B6258;display:inline-block;margin:2px}
+  .r-accent{color:#C85A4E;font-weight:600}
+
+  /* Step cards */
+  .step-card{width:180px;height:180px;background:#fff;border:1px solid #E6DFD6;border-radius:12px;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .step-card .icon{font-size:40px;margin-bottom:8px}
+  .step-card .title{font-size:14px;font-weight:600;color:#1A1816;margin-bottom:4px}
+  .step-card .desc{font-size:11px;color:#6B6258}
+</style>
+</head>
+<body>
+
+<div id="root" data-composition-id="main" data-start="0" data-duration="30" data-width="1080" data-height="1920" style="position:relative;width:1080px;height:1920px;overflow:hidden;background:#FAF8F5">
+
+<!-- ===== ACT 1: 效果展示 (0-10s) ===== -->
+<!-- Title card -->
+<div class="clip" data-start="0" data-duration="4" data-track-index="1" style="left:0;top:0;width:1080px;height:1920px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1A1816">
+  <div id="a1-badge" style="font-size:14px;letter-spacing:6px;text-transform:uppercase;color:#C8A96E;font-weight:500;margin-bottom:20px">✦ 传统简历</div>
+  <div id="a1-pdf" style="width:120px;height:160px;background:#fff;border-radius:4px;box-shadow:0 8px 32px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+    <div style="width:60px;height:4px;background:#ddd;border-radius:2px"></div>
+    <div style="width:80px;height:4px;background:#ddd;border-radius:2px"></div>
+    <div style="width:40px;height:4px;background:#ddd;border-radius:2px"></div>
+  </div>
+  <div style="margin-top:16px;font-size:13px;color:rgba(255,255,255,.5);font-family:'JetBrains Mono',monospace">PDF · 静态 · 单向</div>
+</div>
+
+<!-- Transition: PDF fades out, HTML title appears -->
+<div class="clip" data-start="3" data-duration="3" data-track-index="2" style="left:0;top:0;width:1080px;height:1920px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FAF8F5">
+  <div id="a1-arrow" style="font-size:28px;color:#C85A4E;margin-bottom:16px">↓</div>
+  <div id="a1-html-badge" style="font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#C85A4E;font-weight:600;margin-bottom:12px">交互式 HTML 简历</div>
+  <div id="a1-html-title" style="font-family:'PT Serif',serif;font-size:48px;font-weight:700;color:#1A1816;text-align:center;line-height:1.2">
+    让每一次投递<br>都成为<span style="color:#C85A4E">一次展示</span>
+  </div>
+</div>
+
+<!-- Resume live demo -->
+<div class="clip" data-start="5" data-duration="6" data-track-index="3" style="left:50%;top:50%;transform:translate(-50%,-50%);width:400px;height:700px;border:2px solid #E6DFD6;border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.08)">
+  <!-- Resume scrolling content -->
+  <div id="resume-scroll" style="padding:24px 20px">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
+      <div>
+        <div style="font-family:'PT Serif',serif;font-size:22px;font-weight:700">李明</div>
+        <div style="font-size:11px;color:#6B6258;margin-top:2px">AI 产品经理 · 5年经验</div>
+      </div>
+      <div style="font-size:10px;padding:4px 10px;background:#C85A4E;color:#fff;border-radius:4px;font-weight:600">在线版</div>
+    </div>
+    <!-- Stats row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px">
+      <div style="background:#F7F4F0;border-radius:6px;padding:10px;text-align:center">
+        <div style="font-family:'PT Serif',serif;font-size:20px;font-weight:700;color:#C85A4E">5+</div>
+        <div style="font-size:9px;color:#6B6258">年经验</div>
+      </div>
+      <div style="background:#F7F4F0;border-radius:6px;padding:10px;text-align:center">
+        <div style="font-family:'PT Serif',serif;font-size:20px;font-weight:700;color:#C85A4E">7</div>
+        <div style="font-size:9px;color:#6B6258">产品落地</div>
+      </div>
+    </div>
+    <!-- Radar mini -->
+    <div style="text-align:center;margin-bottom:12px">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <polygon points="60,10 104,40 104,80 60,110 16,80 16,40" fill="rgba(200,90,78,.1)" stroke="#C85A4E" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <!-- Timeline items -->
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <div style="width:2px;background:#E6DFD6;border-radius:1px;flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:11px;color:#C85A4E;font-weight:600">2023 — 至今</div>
+        <div style="font-size:13px;font-weight:600;margin:2px 0">高级 AI 产品经理</div>
+        <div style="font-size:10px;color:#6B6258">星辰科技 · 北京</div>
+      </div>
+    </div>
+    <!-- Skills bars -->
+    <div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span>LLM 应用</span><span style="color:#6B6258">95%</span></div>
+      <div class="r-bar" style="margin-bottom:6px"><div class="r-bar-fill" style="--w:95%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span>产品策略</span><span style="color:#6B6258">92%</span></div>
+      <div class="r-bar" style="margin-bottom:6px"><div class="r-bar-fill" style="--w:92%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span>数据分析</span><span style="color:#6B6258">88%</span></div>
+      <div class="r-bar" style="margin-bottom:6px"><div class="r-bar-fill" style="--w:88%"></div></div>
+    </div>
+    <!-- Tags -->
+    <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">
+      <span class="r-tag">LLM</span>
+      <span class="r-tag">Prompt Engineering</span>
+      <span class="r-tag">A/B 测试</span>
+      <span class="r-tag">跨团队协作</span>
+    </div>
+  </div>
+</div>
+
+<!-- ACT 2: 交付过程 (10-18s) -->
+<div class="clip" data-start="10" data-duration="2" data-track-index="4" style="left:0;top:0;width:1080px;height:1920px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FAF8F5">
+  <div style="font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#C85A4E;font-weight:600;margin-bottom:6px">✦ 交付流程</div>
+  <div id="a2-title" style="font-family:'PT Serif',serif;font-size:40px;font-weight:700;color:#1A1816;text-align:center">
+    三步获得<br><span style="color:#C85A4E">专属链接</span>
+  </div>
+</div>
+
+<!-- 3 step cards -->
+<div class="clip" data-start="12" data-duration="6" data-track-index="5" style="left:0;top:0;width:1080px;height:1920px;display:flex;align-items:center;justify-content:center;gap:24px;padding:0 60px">
+  <!-- Step 1 -->
+  <div class="step-card" id="step1">
+    <div class="icon">📝</div>
+    <div class="title">填写信息</div>
+    <div class="desc">在线表单<br>5 分钟填完</div>
+    <div style="margin-top:6px;font-size:10px;font-weight:600;color:#C85A4E">Step 1</div>
+  </div>
+  <!-- Arrow -->
+  <div id="arrow1" style="font-size:28px;color:#C85A4E">→</div>
+  <!-- Step 2 -->
+  <div class="step-card" id="step2">
+    <div class="icon">🤖</div>
+    <div class="title">AI 生成</div>
+    <div class="desc">自动生成交互式<br>HTML 简历</div>
+    <div style="margin-top:6px;font-size:10px;font-weight:600;color:#C85A4E">Step 2</div>
+  </div>
+  <!-- Arrow -->
+  <div id="arrow2" style="font-size:28px;color:#C85A4E">→</div>
+  <!-- Step 3 -->
+  <div class="step-card" id="step3">
+    <div class="icon">🔗</div>
+    <div class="title">部署上线</div>
+    <div class="desc">自动部署<br>一个链接到手</div>
+    <div style="margin-top:6px;font-size:10px;font-weight:600;color:#C85A4E">Step 3</div>
+  </div>
+</div>
+
+<!-- Timeline bar -->
+<div class="clip" data-start="16" data-duration="3" data-track-index="6" style="left:0;top:0;width:1080px;height:1920px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FAF8F5">
+  <div id="time-bar" style="width:400px;height:6px;background:#E6DFD6;border-radius:3px;margin-bottom:16px;overflow:hidden">
+    <div style="height:100%;width:0;background:linear-gradient(90deg,#C85A4E,#C8A96E);border-radius:3px" id="time-fill"></div>
+  </div>
+  <div id="time-label" style="font-family:'PT Serif',serif;font-size:36px;font-weight:700;color:#1A1816;text-align:center">
+    仅需 <span style="color:#C85A4E">10 分钟</span>
+  </div>
+  <div style="margin-top:8px;font-size:16px;color:#6B6258">从填信息到拿到链接</div>
+</div>
+
+<!-- ACT 3: 使用场景 (18-28s) -->
+<div class="clip" data-start="18" data-duration="2" data-track-index="7" style="left:0;top:0;width:1080px;height:1920px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1A1816">
+  <div style="font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#C8A96E;font-weight:600;margin-bottom:6px">✦ 使用场景</div>
+  <div id="a3-title" style="font-family:'PT Serif',serif;font-size:40px;font-weight:700;color:#FAF8F5;text-align:center">
+    HR 收到的是什么？
+  </div>
+</div>
+
+<!-- Phone showing link being sent -->
+<div class="clip" data-start="19" data-duration="5" data-track-index="8" style="left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:60px;align-items:center">
+  <!-- Chat message -->
+  <div id="chat-box" style="width:280px;padding:20px;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.1);border:1px solid #E6DFD6">
+    <div style="font-size:11px;font-weight:600;color:#6B6258;margin-bottom:12px">📱 微信</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <div style="width:28px;height:28px;border-radius:50%;background:#C85A4E;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:600;flex-shrink:0">张</div>
+      <div style="background:#F5F2EE;border-radius:8px 8px 8px 0;padding:8px 12px;font-size:12px;color:#1A1816">
+        您好，这是我的简历
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <div style="width:28px;height:28px;border-radius:50%;background:#C85A4E;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:600;flex-shrink:0"></div>
+      <div id="link-card" style="background:#F7F4F0;border:1px solid #E6DFD6;border-radius:8px;padding:10px;flex:1">
+        <div style="font-size:9px;color:#C85A4E;font-weight:600">🔗 在线简历</div>
+        <div style="font-size:11px;font-weight:600;margin:2px 0">李明 · AI 产品经理</div>
+        <div style="font-size:9px;color:#6B6258;word-break:break-all">tiancaiLEO.github.io/resume</div>
+        <div style="margin-top:6px;display:flex;gap:4px">
+          <span style="font-size:8px;padding:2px 6px;background:#C85A4E;color:#fff;border-radius:3px">交互式</span>
+          <span style="font-size:8px;padding:2px 6px;background:#F0E6E4;color:#C85A4E;border-radius:3px">可分享</span>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right;font-size:10px;color:#6B6258;margin-top:8px">已读 · 刚刚</div>
+  </div>
+
+  <!-- Phone showing resume -->
+  <div class="phone" id="phone-mock">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div style="text-align:center;margin-bottom:10px">
+        <div style="font-family:'PT Serif',serif;font-size:18px;font-weight:700">李明</div>
+        <div style="font-size:9px;color:#6B6258">AI 产品经理</div>
+      </div>
+      <div class="phone-line l"></div>
+      <div class="phone-line w"></div>
+      <div class="phone-block"></div>
+      <div class="phone-line l"></div>
+      <div class="phone-line w"></div>
+      <div class="phone-line s"></div>
+      <div style="display:flex;gap:4px;margin:8px 0">
+        <span class="phone-dot"></span><span class="phone-dot"></span><span class="phone-dot"></span>
+      </div>
+      <div class="phone-line l"></div>
+      <div class="phone-block" style="height:50px"></div>
+      <div class="phone-line w"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA Final -->
+<div class="clip" data-start="26" data-duration="4" data-track-index="9" style="left:0;top:0;width:1080px;height:1920px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#1A1816,#2A2420)">
+  <div id="cta-icon" style="font-size:56px;margin-bottom:16px">✨</div>
+  <div id="cta-title" style="font-family:'PT Serif',serif;font-size:44px;font-weight:700;color:#FAF8F5;text-align:center;line-height:1.2">
+    你的简历<br>也可以这样
+  </div>
+  <div id="cta-sub" style="margin-top:16px;font-size:14px;color:#C8A96E;letter-spacing:3px;text-transform:uppercase">扫码联系 · 专属定制</div>
+  <div id="cta-line" style="margin-top:24px;width:60px;height:2px;background:linear-gradient(90deg,#C85A4E,#C8A96E);border-radius:1px"></div>
+  <div id="cta-tag" style="margin-top:20px;font-size:12px;color:rgba(255,255,255,.4);font-family:'JetBrains Mono',monospace">HTML · 交互式 · 一个链接</div>
+</div>
+
+</div>
+
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({ paused: true });
+
+// Act 1: Traditional PDF fades out
+tl.from("#a1-pdf", { opacity: 1, scale: 1, duration: 0.5 }, 0);
+tl.to("#a1-pdf", { opacity: 0, scale: 0.8, duration: 0.6 }, 2.2);
+tl.to("#a1-badge", { opacity: 0, y: -10, duration: 0.4 }, 2.5);
+tl.to("#a1-arrow", { opacity: 1, y: [0, -8, 0], duration: 0.8, repeat: 1 }, 3);
+tl.from("#a1-html-badge", { opacity: 0, y: 10, duration: 0.5 }, 2.8);
+tl.from("#a1-html-title", { opacity: 0, y: 20, duration: 0.6 }, 3);
+tl.to("#a1-html-title", { opacity: 0, duration: 0.3 }, 4.5);
+
+// Resume demo scroll animation
+tl.from("#resume-scroll", { opacity: 0, y: 30, duration: 0.5 }, 5);
+tl.to("#resume-scroll", { y: -120, duration: 3, ease: "power1.inOut" }, 6);
+tl.to("#resume-scroll", { opacity: 0, duration: 0.3 }, 9.5);
+
+// Act 2: Delivery flow
+tl.from("#a2-title", { opacity: 0, y: 20, duration: 0.5 }, 10.5);
+tl.from("#step1", { opacity: 0, x: -30, duration: 0.4 }, 12);
+tl.from("#step2", { opacity: 0, y: 20, duration: 0.4 }, 12.5);
+tl.from("#step3", { opacity: 0, x: 30, duration: 0.4 }, 13);
+tl.from("#arrow1", { opacity: 0, scale: 0, duration: 0.3 }, 12.3);
+tl.from("#arrow2", { opacity: 0, scale: 0, duration: 0.3 }, 12.8);
+tl.to("#step1", { opacity: 0.4, scale: 0.95, duration: 0.3 }, 15);
+tl.to("#step2", { opacity: 0.4, scale: 0.95, duration: 0.3 }, 15.3);
+tl.to("#step3", { opacity: 0.4, scale: 0.95, duration: 0.3 }, 15.6);
+
+// Time bar
+tl.from("#time-fill", { width: "0%", duration: 1.5, ease: "power2.out" }, 16.5);
+tl.from("#time-label", { opacity: 0, scale: 0.8, duration: 0.5 }, 17);
+tl.to("#time-label", { opacity: 0, duration: 0.2 }, 18);
+tl.to("#time-fill", { opacity: 0, duration: 0.2 }, 18);
+
+// Act 3: Usage scenario
+tl.to("#a3-title", { opacity: 1, duration: 0.4 }, 18.5);
+tl.from("#chat-box", { opacity: 0, x: -40, duration: 0.5 }, 19.5);
+tl.from("#phone-mock", { opacity: 0, x: 40, duration: 0.5 }, 19.8);
+tl.to("#link-card", { backgroundColor: "#F0E6E4", duration: 0.3 }, 21);
+tl.to("#link-card", { backgroundColor: "#F7F4F0", duration: 0.3 }, 21.5);
+tl.to("#phone-mock", { y: -8, duration: 0.4 }, 22.5);
+tl.to("#phone-mock", { y: 0, duration: 0.4 }, 23);
+tl.to("#chat-box", { opacity: 0, x: -20, duration: 0.4 }, 24);
+tl.to("#phone-mock", { opacity: 0, x: 20, duration: 0.4 }, 24);
+
+// CTA
+tl.from("#cta-icon", { opacity: 0, scale: 0, duration: 0.5, ease: "back.out(2)" }, 26);
+tl.from("#cta-title", { opacity: 0, y: 20, duration: 0.5 }, 26.3);
+tl.from("#cta-sub", { opacity: 0, y: 10, duration: 0.4 }, 26.8);
+tl.from("#cta-line", { width: "0px", duration: 0.5, ease: "power2.out" }, 27);
+tl.from("#cta-tag", { opacity: 0, duration: 0.4 }, 28);
+
+window.__timelines["main"] = tl;
+</script>
+</body>
+</html>
