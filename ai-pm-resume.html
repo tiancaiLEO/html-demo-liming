@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>李明 · AI 产品经理 | 交互式简历</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#FAF8F5;
+    --surface:#FFFFFF;
+    --card:#F7F4F0;
+    --border:#E6DFD6;
+    --text:#1A1816;
+    --text2:#6B6258;
+    --text3:#9C9388;
+    --accent:#C85A4E;
+    --accent2:#E85D4A;
+    --accent-light:#F5EDEA;
+    --gold:#C8A96E;
+    --line:1px solid var(--border);
+    --font-sans:'Inter','SF Pro',system-ui,sans-serif;
+    --font-serif:'PT Serif','Georgia',serif;
+    --font-display:'Playfair Display','PT Serif',serif;
+    --font-mono:'JetBrains Mono','Fira Code',monospace;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --shad:0 4px 24px rgba(26,24,22,.06);
+    --shad-h:0 12px 48px rgba(26,24,22,.10);
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-sans);
+    background:var(--bg);color:var(--text);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ===== UTILITY ===== */
+  .serif{font-family:var(--font-serif)}
+  .display{font-family:var(--font-display)}
+  .mono{font-family:var(--font-mono)}
+  .accent{color:var(--accent)}
+  .muted{color:var(--text2)}
+  .faint{color:var(--text3)}
+  .tag{
+    display:inline-block;font-size:.7rem;padding:3px 12px;
+    background:var(--accent-light);color:var(--accent);
+    letter-spacing:.03em;font-weight:500;
+  }
+  .tag.outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+
+  /* ===== SCROLL ANIMATIONS ===== */
+  .reveal{opacity:0;transform:translateY(40px);transition:all .8s var(--ease)}
+  .reveal.vis{opacity:1;transform:translateY(0)}
+  .reveal-l{opacity:0;transform:translateX(-40px);transition:all .8s var(--ease)}
+  .reveal-l.vis{opacity:1;transform:translateX(0)}
+  .reveal-r{opacity:0;transform:translateX(40px);transition:all .8s var(--ease)}
+  .reveal-r.vis{opacity:1;transform:translateX(0)}
+  .reveal-s{opacity:0;transform:scale(.95);transition:all .8s var(--ease)}
+  .reveal-s.vis{opacity:1;transform:scale(1)}
+  .delay-1{transition-delay:.1s}
+  .delay-2{transition-delay:.2s}
+  .delay-3{transition-delay:.3s}
+  .delay-4{transition-delay:.4s}
+  .delay-5{transition-delay:.5s}
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-rail{
+    position:fixed;top:0;left:0;right:0;z-index:999;
+    height:3px;background:transparent;
+  }
+  .progress-fill{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--gold));
+    transition:width .1s linear;
+  }
+
+  /* ===== NAV ===== */
+  nav{
+    position:fixed;top:3px;left:0;right:0;z-index:998;
+    background:rgba(250,248,245,.92);backdrop-filter:blur(16px);
+    border-bottom:var(--line);padding:0 32px;height:52px;
+    display:flex;align-items:center;justify-content:space-between;
+    transition:transform .4s var(--ease);
+  }
+  nav.hidden{transform:translateY(-100%)}
+  nav .logo{font-size:.82rem;font-weight:600;letter-spacing:.02em}
+  nav .logo span{color:var(--accent)}
+  nav .links{display:flex;gap:4px}
+  nav .links a{
+    font-size:.7rem;color:var(--text2);text-decoration:none;
+    padding:6px 14px;letter-spacing:.04em;text-transform:uppercase;
+    transition:all .2s;border-radius:4px;
+  }
+  nav .links a:hover,.nav .links a.active{background:var(--accent-light);color:var(--accent)}
+  nav .nav-cta{
+    font-size:.7rem;padding:6px 18px;background:var(--accent);color:#fff;
+    text-decoration:none;letter-spacing:.04em;text-transform:uppercase;
+    transition:opacity .2s;
+  }
+  nav .nav-cta:hover{opacity:.85}
+
+  /* ===== SECTION FRAME ===== */
+  section{
+    min-height:100vh;display:flex;align-items:center;
+    padding:80px 32px;position:relative;
+  }
+  .section-inner{max-width:1060px;margin:0 auto;width:100%}
+  .section-number{
+    font-family:var(--font-display);font-size:8rem;font-weight:700;
+    color:var(--border);line-height:.8;position:absolute;top:40px;right:40px;
+    pointer-events:none;user-select:none;
+  }
+  .section-label{
+    font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:8px;
+  }
+  .section-title{
+    font-family:var(--font-display);
+    font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;
+    line-height:1.2;margin-bottom:6px;
+  }
+  .section-desc{font-size:.92rem;color:var(--text2);max-width:540px;margin-bottom:32px}
+
+  /* ===== HERO ===== */
+  .hero{min-height:100vh;padding-top:100px}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .hero .kicker{
+    font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:20px;
+  }
+  .hero h1{
+    font-family:var(--font-display);
+    font-size:clamp(2.4rem,5vw,4rem);font-weight:700;
+    line-height:1.08;letter-spacing:-.02em;
+  }
+  .hero h1 .line{display:block}
+  .hero h1 .hl{
+    background:linear-gradient(135deg,var(--accent),var(--gold));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero .sub{
+    font-size:1rem;color:var(--text2);line-height:1.7;
+    margin-top:20px;max-width:440px;
+  }
+  .hero-meta{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}
+  .hero-meta span{
+    font-size:.8rem;color:var(--text2);display:flex;align-items:center;gap:6px;
+  }
+  .hero-meta span::before{content:"◆";font-size:.4rem;color:var(--accent)}
+  .hero-actions{display:flex;gap:16px;margin-top:28px}
+  .hero-actions a{
+    font-size:.78rem;font-weight:600;text-decoration:none;
+    padding:10px 28px;letter-spacing:.03em;transition:all .3s var(--ease);
+    text-transform:uppercase;
+  }
+  .hero-actions .primary{
+    background:var(--accent);color:#fff;
+  }
+  .hero-actions .primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,90,78,.3)}
+  .hero-actions .secondary{
+    color:var(--text);border-bottom:1px solid var(--text);padding:10px 0;
+  }
+  .hero-actions .secondary:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* HERO RIGHT — Animated Radar */
+  .hero-viz{display:flex;justify-content:center;align-items:center;position:relative}
+  .radar-wrap{position:relative;width:340px;height:340px}
+  .radar-wrap svg{width:100%;height:100%}
+  .radar-label{
+    position:absolute;font-size:.68rem;color:var(--text2);
+    font-weight:500;letter-spacing:.02em;
+  }
+  .radar-label.t{top:-6px;left:50%;transform:translateX(-50%)}
+  .radar-label.tr{top:22%;right:-36px}
+  .radar-label.br{bottom:22%;right:-36px}
+  .radar-label.b{bottom:-6px;left:50%;transform:translateX(-50%)}
+  .radar-label.bl{bottom:22%;left:-24px}
+  .radar-label.tl{top:22%;left:-24px}
+
+  /* ===== INTERACTIVE STAT STRIP ===== */
+  .stat-strip{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--border);border:var(--line);margin-top:48px;
+  }
+  .stat-cell{
+    background:var(--surface);padding:28px 20px;text-align:center;
+    cursor:default;transition:background .3s;
+  }
+  .stat-cell:hover{background:var(--accent-light)}
+  .stat-cell .num{
+    font-family:var(--font-display);font-size:2.4rem;font-weight:700;
+    line-height:1;color:var(--accent);
+  }
+  .stat-cell .lbl{font-size:.72rem;color:var(--text2);margin-top:6px;letter-spacing:.02em}
+  .stat-cell .sub{font-size:.68rem;color:var(--text3);margin-top:2px}
+
+  /* ===== EXPERIENCE ===== */
+  .exp-visual{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .exp-list{position:relative}
+  .exp-list::before{
+    content:'';position:absolute;left:12px;top:12px;bottom:12px;
+    width:2px;background:var(--border);
+  }
+  .exp-dot-wrap{display:flex;gap:16px;margin-bottom:32px;cursor:pointer;
+    transition:all .3s var(--ease);position:relative;
+  }
+  .exp-dot-wrap:hover .exp-dot{background:var(--accent);border-color:var(--accent)}
+  .exp-dot{
+    width:26px;height:26px;border-radius:50%;flex-shrink:0;
+    border:2px solid var(--border);background:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .3s var(--ease);margin-top:2px;
+    font-size:.5rem;color:transparent;
+  }
+  .exp-dot-wrap.active .exp-dot{background:var(--accent);border-color:var(--accent)}
+  .exp-dot-wrap.active .exp-dot::after{content:"●";color:#fff;font-size:.3rem}
+  .exp-dot-wrap:not(.active) .exp-dot::after{content:"○";color:var(--text3)}
+  .exp-body{flex:1}
+  .exp-date{font-size:.72rem;color:var(--text3);font-family:var(--font-mono)}
+  .exp-title{font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin:2px 0}
+  .exp-company{font-size:.82rem;color:var(--accent);font-weight:600}
+  .exp-detail{
+    max-height:0;overflow:hidden;transition:max-height .5s var(--ease),opacity .4s;
+    opacity:0;
+  }
+  .exp-dot-wrap.active .exp-detail{
+    max-height:600px;opacity:1;margin-top:10px;
+  }
+  .exp-detail ul{list-style:none;padding:0}
+  .exp-detail li{
+    position:relative;padding-left:16px;margin-bottom:5px;
+    font-size:.85rem;color:var(--text2);line-height:1.6;
+  }
+  .exp-detail li::before{content:"—";position:absolute;left:0;color:var(--accent)}
+  .exp-detail li strong{color:var(--text);font-weight:600}
+  .exp-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+  .exp-tags span{
+    font-size:.68rem;padding:2px 10px;background:var(--card);color:var(--text2);
+  }
+
+  /* EXP RIGHT — Animated Chart */
+  .exp-chart{position:sticky;top:100px}
+  .exp-chart h4{
+    font-family:var(--font-display);font-size:.9rem;font-weight:700;
+    margin-bottom:16px;letter-spacing:-.01em;
+  }
+  .chart-bar{margin-bottom:14px}
+  .chart-bar .info{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px}
+  .chart-bar .info .l{color:var(--text);font-weight:500}
+  .chart-bar .info .r{color:var(--text3);font-family:var(--font-mono)}
+  .chart-bar .track{
+    height:6px;background:var(--card);border-radius:3px;overflow:hidden;
+  }
+  .chart-bar .fill{
+    height:100%;border-radius:3px;width:0;
+    background:linear-gradient(90deg,var(--accent),var(--gold));
+    transition:width 1.2s var(--ease);
+  }
+  .chart-bar .fill.vis{width:var(--w)}
+  .chart-note{font-size:.72rem;color:var(--text3);font-style:italic;margin-top:16px;text-align:center}
+
+  /* ===== SKILLS — Interactive Hex ===== */
+  .skills-show{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .hex-wrap{position:relative;width:100%;max-width:360px;margin:0 auto}
+  .hex-wrap svg{width:100%;height:auto}
+  .hex-dim{font-size:.65rem;color:var(--text3);text-align:center;margin-top:8px}
+  .skill-cards{display:flex;flex-direction:column;gap:10px}
+  .skill-card{
+    border:var(--line);padding:16px 20px;cursor:pointer;
+    transition:all .3s var(--ease);position:relative;overflow:hidden;
+    background:var(--surface);
+  }
+  .skill-card::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;
+    width:3px;background:var(--accent);transform:scaleY(0);
+    transition:transform .3s var(--ease);transform-origin:top;
+  }
+  .skill-card.active{border-color:var(--accent);background:var(--accent-light)}
+  .skill-card.active::before{transform:scaleY(1)}
+  .skill-card .top{display:flex;justify-content:space-between;align-items:center}
+  .skill-card .name{font-size:.88rem;font-weight:600}
+  .skill-card .lvl{font-size:.68rem;color:var(--text3);font-family:var(--font-mono)}
+  .skill-card .sub{font-size:.78rem;color:var(--text2);margin-top:2px}
+  .skill-card .bar{
+    height:3px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;
+  }
+  .skill-card .bar-fill{
+    height:100%;border-radius:2px;width:0;
+    background:linear-gradient(90deg,var(--accent),var(--gold));
+    transition:width 1s var(--ease);
+  }
+  .skill-card.active .bar-fill{width:var(--w)}
+
+  /* ===== PROJECTS GRID ===== */
+  .proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .proj-card{
+    border:var(--line);padding:28px 24px;cursor:pointer;
+    transition:all .4s var(--ease);background:var(--surface);
+    position:relative;overflow:hidden;
+  }
+  .proj-card::after{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--gold));
+    transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease);
+  }
+  .proj-card:hover{transform:translateY(-6px);box-shadow:var(--shad-h)}
+  .proj-card:hover::after{transform:scaleX(1)}
+  .proj-card .ico{font-size:1.8rem;margin-bottom:12px}
+  .proj-card h4{font-family:var(--font-display);font-size:.95rem;font-weight:700;margin-bottom:4px}
+  .proj-card p{font-size:.8rem;color:var(--text2);line-height:1.6}
+  .proj-card .metric{
+    display:inline-block;margin-top:10px;
+    font-size:.7rem;color:var(--accent);font-weight:600;
+    font-family:var(--font-mono);
+  }
+
+  /* ===== TWO COL ===== */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .info-card{
+    border:var(--line);padding:24px;background:var(--surface);
+    transition:all .3s var(--ease);
+  }
+  .info-card:hover{box-shadow:var(--shad)}
+  .info-card h4{font-family:var(--font-display);font-size:.95rem;font-weight:700}
+  .info-card .sub{font-size:.8rem;color:var(--text2);margin-top:2px}
+  .info-card .dt{font-size:.72rem;color:var(--text3);font-family:var(--font-mono);margin-top:6px}
+
+  /* ===== CONTACT ===== */
+  .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .contact-item{
+    border:var(--line);padding:20px;text-align:center;
+    text-decoration:none;color:var(--text);transition:all .3s var(--ease);
+    background:var(--surface);
+  }
+  .contact-item:hover{background:var(--accent);color:#fff;transform:translateY(-3px);box-shadow:var(--shad-h)}
+  .contact-item:hover .ico{filter:brightness(10)}
+  .contact-item:hover .val,.contact-item:hover .lbl{color:rgba(255,255,255,.8)}
+  .contact-item .ico{font-size:1.4rem;margin-bottom:6px;transition:filter .3s}
+  .contact-item .lbl{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+  .contact-item .val{font-size:.82rem;font-weight:600;margin-top:2px;transition:color .3s}
+
+  /* ===== FOOTER ===== */
+  footer{
+    text-align:center;padding:32px;border-top:var(--line);
+    font-size:.72rem;color:var(--text3);
+  }
+
+  /* ===== MAGNETIC CURSOR HINT ===== */
+  .cursor-hint{
+    position:fixed;bottom:24px;right:24px;z-index:999;
+    font-size:.65rem;color:var(--text3);letter-spacing:.06em;
+    text-transform:uppercase;opacity:.5;pointer-events:none;
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:768px){
+    nav .links{display:none}
+    section{padding:60px 20px;min-height:auto}
+    .hero-grid{grid-template-columns:1fr;gap:32px}
+    .stat-strip{grid-template-columns:repeat(2,1fr)}
+    .exp-visual{grid-template-columns:1fr}
+    .exp-chart{position:static}
+    .skills-show{grid-template-columns:1fr}
+    .proj-grid{grid-template-columns:1fr}
+    .two-col{grid-template-columns:1fr}
+    .contact-grid{grid-template-columns:repeat(2,1fr)}
+    .section-number{font-size:4rem;top:20px;right:20px}
+    .radar-wrap{width:260px;height:260px}
+  }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS -->
+<div class="progress-rail"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">Li <span>Ming</span></div>
+  <div class="links">
+    <a href="#exp">经历</a>
+    <a href="#skills">能力</a>
+    <a href="#proj">项目</a>
+    <a href="#contact">联系</a>
+  </div>
+  <a href="#contact" class="nav-cta">联系我</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <span class="section-number">00</span>
+  <div class="section-inner">
+    <div class="hero-grid">
+      <div class="hero-main">
+        <div class="kicker reveal vis">✦ AI 产品经理</div>
+        <h1>
+          <span class="line reveal vis delay-1">用人工智能</span>
+          <span class="line reveal vis delay-2">重新定义</span>
+          <span class="line reveal vis delay-3"><span class="hl">产品体验</span></span>
+        </h1>
+        <p class="sub reveal vis delay-4">
+          五年 AI 产品经验，从零到规模落地。专注大语言模型应用，
+          让复杂的技术变成直观的产品——因为好的技术应该是无形的。
+        </p>
+        <div class="hero-meta reveal vis delay-4">
+          <span>LLM 应用</span>
+          <span>产品策略</span>
+          <span>跨团队协作</span>
+          <span>数据驱动</span>
+        </div>
+        <div class="hero-actions reveal vis delay-5">
+          <a href="#exp" class="primary">查看履历 ↓</a>
+          <a href="#contact" class="secondary">联系我 →</a>
+        </div>
+      </div>
+
+      <!-- Radar Chart -->
+      <div class="hero-viz reveal-r vis">
+        <div class="radar-wrap">
+          <svg viewBox="0 0 340 340" id="radarChart">
+            <!-- Hex grid -->
+            <polygon points="170,10 294,95 294,245 170,330 46,245 46,95" fill="none" stroke="#E6DFD6" stroke-width="1"/>
+            <polygon points="170,50 260,110 260,230 170,290 80,230 80,110" fill="none" stroke="#E6DFD6" stroke-width=".6" stroke-dasharray="4,4"/>
+            <polygon points="170,90 226,125 226,215 170,250 114,215 114,125" fill="none" stroke="#E6DFD6" stroke-width=".6" stroke-dasharray="4,4"/>
+            <!-- Data polygon (animated) -->
+            <polygon id="radarData" points="170,10 294,95 294,245 170,330 46,245 46,95"
+                     fill="rgba(200,90,78,.15)" stroke="var(--accent)" stroke-width="2"
+                     stroke-linejoin="round">
+              <animate attributeName="points"
+                values="170,170 170,170 170,170 170,170 170,170;
+                        170,10 294,95 294,245 170,330 46,245 46,95"
+                dur="1.5s" fill="freeze" begin="0s"/>
+            </polygon>
+            <!-- Axis lines -->
+            <line x1="170" y1="170" x2="170" y2="10" stroke="#E6DFD6" stroke-width=".4"/>
+            <line x1="170" y1="170" x2="294" y2="95" stroke="#E6DFD6" stroke-width=".4"/>
+            <line x1="170" y1="170" x2="294" y2="245" stroke="#E6DFD6" stroke-width=".4"/>
+            <line x1="170" y1="170" x2="170" y2="330" stroke="#E6DFD6" stroke-width=".4"/>
+            <line x1="170" y1="170" x2="46" y2="245" stroke="#E6DFD6" stroke-width=".4"/>
+            <line x1="170" y1="170" x2="46" y2="95" stroke="#E6DFD6" stroke-width=".4"/>
+            <!-- Center dot -->
+            <circle cx="170" cy="170" r="3" fill="var(--accent)"/>
+          </svg>
+          <span class="radar-label t">产品策略</span>
+          <span class="radar-label tr">LLM 应用</span>
+          <span class="radar-label br">技术理解</span>
+          <span class="radar-label b">数据驱动</span>
+          <span class="radar-label bl">团队领导</span>
+          <span class="radar-label tl">用户研究</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Strip -->
+    <div class="stat-strip reveal vis delay-5">
+      <div class="stat-cell"><div class="num"><span class="counter" data-target="5">0</span>+</div><div class="lbl">年 AI 产品经验</div></div>
+      <div class="stat-cell"><div class="num"><span class="counter" data-target="7">0</span></div><div class="lbl">AI 产品落地</div><div class="sub">3 个从 0→1</div></div>
+      <div class="stat-cell"><div class="num">$8.2M</div><div class="lbl">累计 ARR</div><div class="sub">三个产品线</div></div>
+      <div class="stat-cell"><div class="num"><span class="counter" data-target="15">0</span></div><div class="lbl">团队规模</div><div class="sub">算法 · 工程 · 设计</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXPERIENCE ===== -->
+<section id="exp">
+  <span class="section-number">01</span>
+  <div class="section-inner">
+    <div class="section-label reveal">✦ 工作经历</div>
+    <h2 class="section-title reveal delay-1">职业轨迹</h2>
+    <p class="section-desc reveal delay-2">点击每一项展开详细成果</p>
+
+    <div class="exp-visual">
+      <div class="exp-list reveal-l delay-3">
+        <div class="exp-dot-wrap active" onclick="selectExp(this,0)">
+          <div class="exp-dot"></div>
+          <div class="exp-body">
+            <div class="exp-date">2023 — 至今</div>
+            <div class="exp-title">高级 AI 产品经理</div>
+            <div class="exp-company">星辰科技 · 北京</div>
+            <div class="exp-detail">
+              <ul>
+                <li>主导 LLM 智能客服平台 <strong>从 0 到 1</strong>，上线 6 个月服务 <strong>200+</strong> 企业客户，响应时间降低 <strong>60%</strong></li>
+                <li>管理 <strong>12 人</strong> 跨职能团队（算法、工程、设计、数据），交付周期缩短 <strong>40%</strong></li>
+                <li>设计 Prompt 工程框架 + A/B 测试体系，模型准确率 <strong>72% → 94%</strong></li>
+                <li>推动 3 个 AI 功能上线，贡献新增 ARR <strong>$5.2M</strong></li>
+              </ul>
+              <div class="exp-tags">
+                <span>LLM</span>
+                <span>Prompt Engineering</span>
+                <span>A/B 测试</span>
+                <span>Scrum</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="exp-dot-wrap" onclick="selectExp(this,1)">
+          <div class="exp-dot"></div>
+          <div class="exp-body">
+            <div class="exp-date">2021 — 2023</div>
+            <div class="exp-title">产品经理</div>
+            <div class="exp-company">云智互联 · 上海</div>
+            <div class="exp-detail">
+              <ul>
+                <li>负责推荐系统产品线，服务 <strong>1000 万+</strong> DAU，用户停留时长提升 <strong>35%</strong></li>
+                <li>搭建数据指标监控体系，驱动 <strong>20+</strong> 并行产品实验</li>
+                <li>协调算法与工程完成推荐模型迭代，CTR 提升 <strong>28%</strong></li>
+              </ul>
+              <div class="exp-tags">
+                <span>推荐系统</span>
+                <span>数据分析</span>
+                <span>用户增长</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="exp-dot-wrap" onclick="selectExp(this,2)">
+          <div class="exp-dot"></div>
+          <div class="exp-body">
+            <div class="exp-date">2019 — 2021</div>
+            <div class="exp-title">助理产品经理</div>
+            <div class="exp-company">极光科技 · 深圳</div>
+            <div class="exp-detail">
+              <ul>
+                <li>参与搭建 A/B 测试平台，服务 <strong>50+</strong> 产品团队，实验效率提升 <strong>3 倍</strong></li>
+                <li>完成 <strong>50+</strong> 用户访谈，产出 30+ 产品建议，采纳率 <strong>80%</strong></li>
+              </ul>
+              <div class="exp-tags">
+                <span>A/B 测试</span>
+                <span>用户研究</span>
+                <span>SQL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Animated Bar Chart -->
+      <div class="exp-chart reveal-r delay-4">
+        <h4>📊 核心影响力指标</h4>
+        <div class="chart-bar">
+          <div class="info"><span class="l">ARR 贡献</span><span class="r">$5.2M</span></div>
+          <div class="track"><div class="fill" style="--w:92%" data-width="92"></div></div>
+        </div>
+        <div class="chart-bar">
+          <div class="info"><span class="l">团队管理规模</span><span class="r">15 人</span></div>
+          <div class="track"><div class="fill" style="--w:75%" data-width="75"></div></div>
+        </div>
+        <div class="chart-bar">
+          <div class="info"><span class="l">产品迭代速度提升</span><span class="r">40%</span></div>
+          <div class="track"><div class="fill" style="--w:80%" data-width="80"></div></div>
+        </div>
+        <div class="chart-bar">
+          <div class="info"><span class="l">模型准确率提升</span><span class="r">22pp</span></div>
+          <div class="track"><div class="fill" style="--w:70%" data-width="70"></div></div>
+        </div>
+        <div class="chart-bar">
+          <div class="info"><span class="l">企业客户数</span><span class="r">200+</span></div>
+          <div class="track"><div class="fill" style="--w:85%" data-width="85"></div></div>
+        </div>
+        <div class="chart-note">数据基于最近两年核心项目</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section id="skills" style="background:var(--surface);border-top:var(--line);border-bottom:var(--line)">
+  <span class="section-number">02</span>
+  <div class="section-inner">
+    <div class="section-label reveal">⚡ 核心能力</div>
+    <h2 class="section-title reveal delay-1">能力矩阵</h2>
+    <p class="section-desc reveal delay-2">点击分类查看详细能力说明</p>
+
+    <div class="skills-show">
+      <!-- Interactive Hex Map -->
+      <div class="hex-wrap reveal-l delay-3">
+        <svg viewBox="0 0 360 340">
+          <!-- Hex 1: AI/ML -->
+          <polygon points="180,20 260,60 260,140 180,180 100,140 100,60"
+                   class="skill-hex" data-group="0"
+                   fill="rgba(200,90,78,.12)" stroke="var(--accent)" stroke-width="1.5"
+                   style="cursor:pointer;transition:all .3s"/>
+          <text x="180" y="95" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="600" font-family="Inter">AI / ML</text>
+          <!-- Hex 2: Product -->
+          <polygon points="290,100 370,140 370,220 290,260 210,220 210,140"
+                   class="skill-hex" data-group="1"
+                   fill="rgba(200,90,78,.08)" stroke="var(--border)" stroke-width="1"
+                   style="cursor:pointer;transition:all .3s"/>
+          <text x="290" y="175" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="500" font-family="Inter">产品管理</text>
+          <!-- Hex 3: Data -->
+          <polygon points="100,100 180,140 180,220 100,260 20,220 20,140"
+                   class="skill-hex" data-group="2"
+                   fill="rgba(200,90,78,.08)" stroke="var(--border)" stroke-width="1"
+                   style="cursor:pointer;transition:all .3s"/>
+          <text x="100" y="175" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="500" font-family="Inter">数据驱动</text>
+          <!-- Hex 4: Leadership -->
+          <polygon points="180,200 260,240 260,320 180,360 100,320 100,240"
+                   class="skill-hex" data-group="3"
+                   fill="rgba(200,90,78,.08)" stroke="var(--border)" stroke-width="1"
+                   style="cursor:pointer;transition:all .3s"/>
+          <text x="180" y="275" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="500" font-family="Inter">领导力</text>
+        </svg>
+      </div>
+
+      <!-- Skill Detail Cards -->
+      <div class="skill-cards reveal-r delay-4">
+        <div class="skill-card active" onclick="selectSkill(this)">
+          <div class="top"><span class="name">大语言模型应用设计</span><span class="lvl">Expert</span></div>
+          <div class="sub">GPT-4, Claude, 文心, GLM — 从 prompt 到 agent 架构</div>
+          <div class="bar"><div class="bar-fill" style="--w:95%"></div></div>
+        </div>
+        <div class="skill-card" onclick="selectSkill(this)">
+          <div class="top"><span class="name">Prompt 工程与优化</span><span class="lvl">Advanced</span></div>
+          <div class="sub">Few-shot, Chain-of-Thought, 结构化输出, 评估框架</div>
+          <div class="bar"><div class="bar-fill" style="--w:90%"></div></div>
+        </div>
+        <div class="skill-card" onclick="selectSkill(this)">
+          <div class="top"><span class="name">A/B 测试与实验设计</span><span class="lvl">Expert</span></div>
+          <div class="sub">假设验证、样本量计算、统计显著性分析</div>
+          <div class="bar"><div class="bar-fill" style="--w:92%"></div></div>
+        </div>
+        <div class="skill-card" onclick="selectSkill(this)">
+          <div class="top"><span class="name">产品策略与路线图</span><span class="lvl">Expert</span></div>
+          <div class="sub">愿景定义 → 机会识别 → 优先级排序 → 规模化路线</div>
+          <div class="bar"><div class="bar-fill" style="--w:92%"></div></div>
+        </div>
+        <div class="skill-card" onclick="selectSkill(this)">
+          <div class="top"><span class="name">跨职能团队领导</span><span class="lvl">Advanced</span></div>
+          <div class="sub">协调算法、工程、设计、业务团队达成共识与交付</div>
+          <div class="bar"><div class="bar-fill" style="--w:88%"></div></div>
+        </div>
+        <div class="skill-card" onclick="selectSkill(this)">
+          <div class="top"><span class="name">用户研究与需求发现</span><span class="lvl">Advanced</span></div>
+          <div class="sub">用户访谈、可用性测试、Job-to-be-Done 框架</div>
+          <div class="bar"><div class="bar-fill" style="--w:85%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECTS ===== -->
+<section id="proj">
+  <span class="section-number">03</span>
+  <div class="section-inner">
+    <div class="section-label reveal">🚀 代表项目</div>
+    <h2 class="section-title reveal delay-1">核心案例</h2>
+    <p class="section-desc reveal delay-2">从发现需求到规模化落地</p>
+
+    <div class="proj-grid">
+      <div class="proj-card reveal-s delay-3">
+        <div class="ico">🤖</div>
+        <h4>AI 智能客服平台</h4>
+        <p>基于大模型的企业级客服系统，支持多轮对话、知识库检索、工单自动流转</p>
+        <div class="metric">−60% 响应时间 · 200+ 企业客户</div>
+      </div>
+      <div class="proj-card reveal-s delay-4">
+        <div class="ico">📄</div>
+        <h4>AI 内容生成中台</h4>
+        <p>统一管理 LLM 调用、Prompt 模板、内容审核，支持营销文案、报告自动生成</p>
+        <div class="metric">$3M ARR · 50+ 企业租户</div>
+      </div>
+      <div class="proj-card reveal-s delay-5">
+        <div class="ico">📊</div>
+        <h4>推荐系统 v3.0</h4>
+        <p>基于用户行为序列的实时推荐引擎，多目标优化——CTR + 停留时长</p>
+        <div class="metric">+28% CTR · 1000 万+ DAU</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EDUCATION ===== -->
+<section style="min-height:auto;padding:56px 32px;border-top:var(--line)">
+  <span class="section-number" style="font-size:4rem;opacity:.3">04</span>
+  <div class="section-inner">
+    <div class="section-label reveal">🎓 教育背景</div>
+    <div class="two-col">
+      <div class="info-card reveal-l delay-2">
+        <h4>北京大学</h4>
+        <div class="sub">计算机科学与技术 · 硕士</div>
+        <div class="dt">研究方向：自然语言处理与推荐系统 · 2017—2019</div>
+      </div>
+      <div class="info-card reveal-r delay-3">
+        <h4>浙江大学</h4>
+        <div class="sub">信息管理与信息系统 · 学士</div>
+        <div class="dt">2013—2017</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact" style="min-height:auto;padding:56px 32px">
+  <div class="section-inner">
+    <div class="section-label reveal">📬 保持联系</div>
+    <h2 class="section-title reveal delay-1">联系我</h2>
+    <div class="contact-grid reveal delay-2">
+      <a href="mailto:liming.ai@example.com" class="contact-item">
+        <div class="ico">✉</div>
+        <div class="lbl">邮箱</div>
+        <div class="val">liming.ai@example.com</div>
+      </a>
+      <a href="#" class="contact-item">
+        <div class="ico">📱</div>
+        <div class="lbl">电话</div>
+        <div class="val">+86 138-0000-1234</div>
+      </a>
+      <a href="#" class="contact-item">
+        <div class="ico">💬</div>
+        <div class="lbl">微信</div>
+        <div class="val">liming_pm</div>
+      </a>
+      <a href="#" class="contact-item">
+        <div class="ico">🔗</div>
+        <div class="lbl">作品集</div>
+        <div class="val">liming-ai.dev</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>李明 · AI 产品经理 · 用 AI 重新定义产品体验</p>
+</footer>
+
+<div class="cursor-hint">滚动探索 ↓</div>
+
+<script>
+// ===== PROGRESS BAR =====
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+// ===== NAV HIDE ON SCROLL =====
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const cur = window.scrollY;
+  document.getElementById('nav').classList.toggle('hidden', cur > lastScroll && cur > 100);
+  lastScroll = cur;
+});
+
+// ===== REVEAL OBSERVER =====
+const ro = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.classList.add('vis');
+      // Trigger chart bars inside
+      e.target.querySelectorAll('.fill').forEach(el => el.classList.add('vis'));
+    }
+  });
+}, { threshold: .1 });
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r,.reveal-s').forEach(el => ro.observe(el));
+
+// ===== COUNTER ANIMATION =====
+const co = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting && !e.target.dataset.counted){
+      e.target.dataset.counted = '1';
+      const target = parseInt(e.target.dataset.target);
+      const duration = 1500;
+      const start = performance.now();
+      function update(now){
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        e.target.textContent = Math.round(eased * target);
+        if(p < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+  });
+}, { threshold: .3 });
+document.querySelectorAll('.counter').forEach(el => co.observe(el));
+
+// ===== EXPERIENCE SELECT =====
+function selectExp(el, idx) {
+  document.querySelectorAll('.exp-dot-wrap').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  // Update chart
+  const fills = document.querySelectorAll('.exp-chart .fill');
+  const widths = [92, 75, 80, 70, 85];
+  fills.forEach((f, i) => {
+    f.style.width = '0';
+    setTimeout(() => { f.style.width = widths[i] + '%'; }, 50);
+  });
+}
+
+// ===== SKILL CARD SELECT =====
+function selectSkill(el) {
+  document.querySelectorAll('.skill-card').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  el.querySelector('.bar-fill').style.width = el.querySelector('.bar-fill').style.width || '0%';
+}
+
+// ===== HEX HOVER =====
+document.querySelectorAll('.skill-hex').forEach(hex => {
+  hex.addEventListener('click', () => {
+    document.querySelectorAll('.skill-hex').forEach(h => {
+      h.setAttribute('fill', 'rgba(200,90,78,.08)');
+      h.setAttribute('stroke', 'var(--border)');
+    });
+    hex.setAttribute('fill', 'rgba(200,90,78,.12)');
+    hex.setAttribute('stroke', 'var(--accent)');
+  });
+});
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
